@@ -5,6 +5,8 @@ import com.taskservice.emailservice.exception.custom.EmailNotFoundException;
 import com.taskservice.emailservice.model.Email;
 import com.taskservice.emailservice.repository.EmailRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.Set;
 public class EmailService {
 
     private EmailRepository emailRepository;
+    private JavaMailSender emailSender;
 
 
     public Email updateEmailIfExist(Email email) {
@@ -44,5 +47,14 @@ public class EmailService {
 
     public void deleteEmail(Email email) {
         emailRepository.delete(email);
+    }
+
+    public void sendSimpleMessage(List<String> to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to.toArray(String[]::new));
+        message.setSubject(subject);
+        message.setText(text);
+        message.setText(text);
+        emailSender.send(message);
     }
 }

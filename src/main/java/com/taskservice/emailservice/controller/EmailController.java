@@ -1,10 +1,13 @@
 package com.taskservice.emailservice.controller;
 
+import com.taskservice.emailservice.api.model.Task;
+import com.taskservice.emailservice.exception.custom.EmailNotFoundException;
 import com.taskservice.emailservice.model.Email;
 import com.taskservice.emailservice.service.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +38,21 @@ public class EmailController {
     @PostMapping(value = "/emails")
     public ResponseEntity<Email> addNewEmail(@RequestBody Email email) {
         return new ResponseEntity<>(emailService.addNewEmailIfNotExist(email), HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/emails/send")
+    public ResponseEntity<String> sendMail(@RequestBody @Valid Task task, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new EmailNotFoundException("Emails not found");
+        }
+
+        emailService.sendSimpleMessage(
+                task.getEmailList(),
+                task.getName(),
+                task.getDescription()
+        );
+
+        return new ResponseEntity<>("DUPAAAA", HttpStatus.OK);
     }
 
     @PutMapping(value = "/emails")
