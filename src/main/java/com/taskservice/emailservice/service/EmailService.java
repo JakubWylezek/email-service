@@ -30,11 +30,10 @@ public class EmailService {
         return emailRepository.save(email);
     }
 
-    public Email addNewEmailIfNotExist(Email email) {
-        if(checkIfEmailsExist(Set.of(email.getName()))) {
-            throw new DuplicateMailException(email.getName());
+    public void addNewEmailIfNotExist(Email email) {
+        if(!checkIfEmailsExist(Set.of(email.getName()))) {
+            emailRepository.save(email);
         }
-        return emailRepository.save(email);
     }
 
     public boolean checkIfEmailsExist(Set<String> emailSet) {

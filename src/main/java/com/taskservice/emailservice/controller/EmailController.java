@@ -37,7 +37,8 @@ public class EmailController {
 
     @PostMapping(value = "/emails")
     public ResponseEntity<Email> addNewEmail(@RequestBody Email email) {
-        return new ResponseEntity<>(emailService.addNewEmailIfNotExist(email), HttpStatus.CREATED);
+        emailService.addNewEmailIfNotExist(email);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping(value = "/emails/send")
@@ -52,7 +53,7 @@ public class EmailController {
                 task.getDescription()
         );
 
-        return new ResponseEntity<>("DUPAAAA", HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PutMapping(value = "/emails")
